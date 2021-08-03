@@ -10,6 +10,11 @@
     <link rel="icon" type="image/x-icon" href="/template/assets/favicon.ico"/>
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/template/css/styles.css" rel="stylesheet"/>
 </head>
@@ -39,11 +44,57 @@
                 </li>
             </ul>
             <form class="d-flex">
-                <button class="btn btn-outline-dark" type="submit">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">{{$cart_count}}</span>
-                </button>
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{$cart_count}}</span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <table class="table table-bordered table-sm ">
+                            <thead>
+                            <tr>
+                                <th>name</th>
+                                <th>quantity</th>
+                                <th>price</th>
+                                <th>remove</th>
+                                <th>update</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach(\Gloudemans\Shoppingcart\Facades\Cart::content() as $item)
+                                <tr>
+                                    <td>{{$item->name}}</td>
+                                    <td>{{$item->qty}}</td>
+                                    <td>{{number_format($item->subtotal(0))}}</td>
+                                    <td><a href="/product/remove/{{$item->rowId}}">
+                                            remove
+                                        </a></td>
+                                    <td>
+                                        <form action="">
+                                            <input type="number" value="{{$item->qty}}">
+                                            <button type="submit"> update</button>
+
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                                <td>Total</td>
+                                <td>{{number_format(\Gloudemans\Shoppingcart\Facades\Cart::total())}}</td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                        <div class="text-center">
+                            <a class="btn-primary btn" type="button" href="/product/show">detail</a>
+                        </div>
+                    </div>
+
+                </div>
             </form>
         </div>
     </div>
@@ -58,6 +109,13 @@
     </div>
 </header>
 <!-- Section-->
+@if(session()->get('status'))
+    <div class="alert alert-success alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+
+        {{ session()->get( 'status' ) }}
+    </div>
+@endif
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -84,7 +142,8 @@
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
-                                <a  class="addToCart btn btn-primary mt-auto" data-url="{{route('addToCart',['id'=>$list->id])}}">Add to cart</a>
+                                <a class="addToCart btn btn-primary mt-auto"
+                                   data-url="{{route('addToCart',['id'=>$list->id])}}">Add to cart</a>
                             </div>
                         </div>
                     </div>
@@ -103,22 +162,24 @@
 <!-- Core theme JS-->
 <script src="/template/js/scripts.js"></script>
 <script>
-    function addToCart(event){
+    function addToCart(event) {
         event.preventDefault();
         let urlCart = $(this).data('url')
         $.ajax({
-            type:'GET',
+            type: 'GET',
             url: urlCart,
-            dataType:'json',
-            success: function (){
+            dataType: 'json',
+            success: function () {
                 alert('thanh cong')
             },
-            errors:function (){
+            errors: function () {
 
             }
         })
+        window.location.reload();
     }
-    $(function (){
+
+    $(function () {
         $('.addToCart').on('click', addToCart)
     })
 </script>

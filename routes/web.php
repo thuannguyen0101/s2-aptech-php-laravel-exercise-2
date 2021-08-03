@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,8 +23,11 @@ Route::get('/', function () {
 Route::prefix('/product')->group(function () {
     Route::get('', [ProductController::class, 'index']);
     Route::get('/destroy', [ProductController::class, 'delete']);
+    Route::get('/order', [OrderController::class, 'save']);
     Route::get('/remove/{rowId}', [ProductController::class, 'remove']);
     Route::get('/remove/{rowId}', [ProductController::class, 'remove']);
     Route::get('show', [ProductController::class, 'show'])->name('show');
     Route::get('addToCart/{id}', [ProductController::class, 'addToCart'])->name('addToCart');
+
 });
+

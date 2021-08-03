@@ -25,7 +25,11 @@ class ProductController extends Controller
         Cart::add($product->id, $product->name, 1, $floatVar ,['thumbnail' => $product->thumbnail]);
     }
     public function show()
-    {
+    {   $cart_count = Cart::content()->count();
+        $lists = Product::all();
+        if (Cart::content()->count()==0){
+            return redirect('product')->with(['lists'=>$lists, 'cart_count'=>$cart_count]);
+        }
        return view('product/list');
     }
     public function delete()
