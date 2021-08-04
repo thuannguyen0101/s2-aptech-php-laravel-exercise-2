@@ -46,7 +46,8 @@
             <form class="d-flex">
 
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="bi-cart-fill me-1"></i>
                         Cart
                         <span class="badge bg-dark text-white ms-1 rounded-pill"></span>
@@ -148,6 +149,7 @@
     </table>
     <div>
         <a href="/product/order" type="button" class="btn btn-primary">Buy</a>
+        <div id="paypal-button-container"></div>
     </div>
 </div>
 
@@ -160,5 +162,35 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Core theme JS-->
 <script src="/template/js/scripts.js"></script>
+<script
+    src="https://www.paypal.com/sdk/js?client-id=AT6K8zDwlR_AxTnXFc3R-rvEBQvia9kpt9ix4XJvrmZGa5PI-J5HBARwBq-fafaheoKgkYMg4Lckmb-r"></script>
+
+
+<script>
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            // This function sets up the details of the transaction, including the amount and line item details.
+            return actions.order.create({
+                purchase_units: [{
+                    reference_id: "store_mobile_world_order_1234",
+                    description: "Mobile World Store order-1234",
+                    amount: {
+                        value: 1
+                    }
+                }]
+            });
+        },
+        onApprove: function (data, actions) {
+            // This function captures the funds from the transaction.
+            return actions.order.capture().then(function (details) {
+                // This function shows a transaction success message to your buyer.
+                alert('Transaction completed by ' + details.payer.name.given_name);
+            });
+        }
+    }).render('#paypal-button-container');
+    //This function displays Smart Payment Buttons on your web page.
+</script>
+
+
 </body>
 </html>

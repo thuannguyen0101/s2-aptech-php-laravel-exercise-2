@@ -45,6 +45,8 @@ class ProductController extends Controller
     {
         $id = $request->rowId;
         $quantity = $request->qty;
+
+
     }
 
 }
